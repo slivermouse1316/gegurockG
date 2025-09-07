@@ -86,3 +86,14 @@ async function loadPartials() {
 document.addEventListener("DOMContentLoaded", () => {
   loadPartials();
 });
+
+async function loadPartials() {
+  const header = document.getElementById("header");
+  if (header)
+    header.innerHTML = await (await fetch("assets/header.html")).text();
+
+  const footer = document.getElementById("footer");
+  if (footer)
+    footer.innerHTML = await (await fetch("assets/footer.html")).text();
+}
+document.addEventListener("DOMContentLoaded", loadPartials);
