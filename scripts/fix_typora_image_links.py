@@ -1,75 +1,67 @@
 # -*- coding: utf-8 -*-
 """
-Typora가 삽입한 이미지 경로를 Jekyll 친화적 경로로 일괄 변환합니다.
-대상:
-  1) ![alt](../assets/images/foo.jpg)
-  2) ![alt](./assets/images/foo.jpg)
-  3) ![alt](/assets/images/foo.jpg)
-  4) ![alt](C:\...\assets\images\foo.jpg)  # 윈도 경로
-이미 relative_url 이 들어간 줄, http(s) 외부 URL은 건드리지 않습니다.
+Typora가 삽입하는 이미지 링크를 Jekyll 권장형식으로 일괄 변환:
+  ![alt](../assets/images/foo.jpg)
+  ![alt](./assets/images/foo.jpg)
+  ![alt](/assets/images/foo.jpg)
+  ![alt](C:\...\assets\images\foo.jpg)
+→ ![alt]({{ '/assets/images/foo.jpg' | relative_url }})
+
+- 이미 relative_url이 들어간 줄, http(s) 외부 링크는 건드리지 않음
+- 모든 .md, .markdown 파일 대상
+- 원본 파일은 .bak로 백업
 """
 
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).parent
-# 필요하면 확장자 추가 가능
-EXTS = (".md", ".markdown")
+ROOT = Path(__file__).resolve().parent.parent
+MD_EXTS = {".md", ".markdown"}
 
-# 정규식들
-# 이미 변환된 줄은 건드리지 않기
-already_ok = re.compile(r"relative_url\s*}}")
+# 스킵 조건: 이미 변환됨 / 외부 URL
+rx_skip = re.compile(r"relative_url\s*}}|]\(\s*https?://", re.I)
 
-# http/https 외부 링크는 무시
-is_http = re.compile(r"]\(\s*https?://", re.I)
-
-# ../assets/images/foo.jpg  또는 ./assets/images/foo.jpg  또는 /assets/images/foo.jpg
-p_assets_rel = re.compile(
-    r"!\[([^\]]*)\]\(\s*(?:\.\./|\./|/)?assets/images/([^)]+?)\s*\)", re.I
+# ../assets/images/foo.jpg  ./assets/images/foo.jpg  /assets/images/foo.jpg  (공백·괄호 방지)
+rx_assets_rel = re.compile(
+    r"!\[([^\]]*)\]\(\s*(?:\.\./|\./|/)?assets/images/([^)#\s]+?)\s*\)", re.I
 )
 
 # 윈도 경로 C:\...\assets\images\foo.jpg  또는 D:/...\assets/images/foo.jpg
-p_assets_win = re.compile(
-    r"!\[([^\]]*)\]\(\s*[A-Za-z]:[\\/].*?[\\/]assets[\\/]images[\\/]([^)\\/:]+)\s*\)", re.I
+rx_assets_win = re.compile(
+    r"!\[([^\]]*)\]\(\s*[A-Za-z]:[\\/].*?[\\/]assets[\\/]images[\\/]+([^)\\/:#\s]+)\s*\)", re.I
 )
 
-def convert_line(line: str) -> str:
-    if already_ok.search(line) or is_http.search(line):
-        return line
-    # 순서 중요: 먼저 상대/절대 assets 패턴
-    new = p_assets_rel.sub(r"![\1]({{ '/assets/images/\2' | relative_url }})", line)
-    if new != line:
-        return new
-    # 윈도 경로 패턴
-    new = p_assets_win.sub(r"![\1]({{ '/assets/images/\2' | relative_url }})", line)
-    return new
+def convert_text(text: str) -> str:
+    # 이미 변환/외부URL 포함 라인은 그대로 두기
+    if rx_skip.search(text):
+        return text
+    text2 = rx_assets_rel.sub(r"![\1]({{ '/assets/images/\2' | relative_url }})", text)
+    text2 = rx_assets_win.sub(r"![\1]({{ '/assets/images/\2' | relative_url }})", text2)
+    return text2
 
-def process_file(path: Path) -> bool:
-    original = path.read_text(encoding="utf-8")
-    lines = original.splitlines(keepends=True)
-    changed = False
-    for i, ln in enumerate(lines):
-        new_ln = convert_line(ln)
-        if new_ln != ln:
-            lines[i] = new_ln
-            changed = True
-    if changed:
-        path.write_text("".join(lines), encoding="utf-8")
-    return changed
+def process_file(p: Path) -> bool:
+    try:
+        original = p.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        # CP949 등으로 저장된 경우에도 동작하도록
+        original = p.read_text(encoding="cp949")
+
+    new = convert_text(original)
+    if new != original:
+        # 백업 저장
+        p.with_suffix(p.suffix + ".bak").write_text(original, encoding="utf-8")
+        p.write_text(new, encoding="utf-8")
+        return True
+    return False
 
 def main():
-    md_files = [p for p in ROOT.rglob("*") if p.suffix.lower() in EXTS]
-    touched = []
-    for p in md_files:
-        if process_file(p):
-            touched.append(p)
-    print(f"Processed {len(md_files)} files.")
-    if touched:
-        print("Updated:")
-        for p in touched:
-            print(" -", p.relative_to(ROOT))
-    else:
-        print("No changes were necessary.")
+    md_files = [f for f in ROOT.rglob("*") if f.suffix.lower() in MD_EXTS]
+    touched = 0
+    for f in md_files:
+        if process_file(f):
+            touched += 1
+            print(f"[fixed] {f.relative_to(ROOT)}")
+    print(f"Done. Updated {touched} file(s). ROOT={ROOT}")
 
 if __name__ == "__main__":
     main()
