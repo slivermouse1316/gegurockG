@@ -1,15 +1,16 @@
-# _config.yml
 title: Vérité
 description: Personal site
-url: https://slivermouse1316.github.io # 사용자/오너 페이지 주소(도메인 X)
-baseurl: /gegurockG # 프로젝트 이름(슬래시 포함)
+
+url: https://slivermouse1316.github.io
+baseurl: /gegurockG
 
 timezone: Asia/Seoul
 markdown: kramdown
 theme: null
-plugins: [] # GitHub Pages 안전 모드
 
-# (선택) 블로그 퍼멀링 구조—원하면 바꾸세요
-permalink: /blog/:title/
+# GitHub Pages에서 허용되는 플러그인
 plugins:
   - jekyll-redirect-from
+
+# 포스트 URL 전역 규칙: /blog/파일명슬러그/
+permalink: /blog/:title/
