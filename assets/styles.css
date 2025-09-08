@@ -81,3 +81,6 @@ footer {
   display: block;
   border-radius: 12px;
 }
+.post-meta {
+  display: none !important;
+}
