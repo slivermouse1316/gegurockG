@@ -152,3 +152,38 @@ footer {
 .post-content h1:first-of-type {
   display: none;
 }
+/* 블로그 목록 UL을 화면 가로 중앙에 배치 */
+.post-list {
+  list-style: none;
+  padding: 0;
+  /* 핵심: 폭을 줄여서 가운데로 */
+  width: min(720px, 92%);
+  margin: 24px auto; /* auto 좌우 → 가운데 정렬 */
+  text-align: center; /* 목록 안의 텍스트는 왼쪽 정렬 유지 */
+}
+
+/* 글 항목 모양(있으면 유지/덮어쓰기) */
+.post-item {
+  position: relative;
+  padding: 12px 14px 12px 1.1em; /* 왼쪽 여백은 불릿 자리 */
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fafafa;
+  margin: 8px 0;
+}
+
+/* 제목 바로 앞 점(•) 붙이는 경우 */
+.post-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  line-height: 1;
+}
+
+.post-link {
+  text-decoration: none;
+}
+.post-link:hover {
+  text-decoration: underline;
+}
