@@ -16,9 +16,7 @@ a:hover {
   text-decoration: underline;
 }
 .container {
-  max-width: 940px;
-  margin: 0 auto;
-  padding: 20px;
+  text-align: center; /* 컨테이너 안 텍스트와 인라인 요소를 중앙정렬 */
 }
 
 /* NAV: 제목 중앙, 메뉴 오른쪽 */
