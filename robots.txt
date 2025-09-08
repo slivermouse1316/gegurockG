@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://slivermouse1316.github.io/gegurockG/sitemap.xml

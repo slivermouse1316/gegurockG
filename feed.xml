@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+    <title>GegurockG</title>
+    <link href="https://slivermouse1316.github.io/gegurockG/feed.xml" rel="self" />
+    <link href="https://slivermouse1316.github.io/gegurockG" />
+    <updated>1970-01-01T09:00:00+09:00</updated>
+    <author>
+        <name>GegurockG</name>
+    </author>
+    <id>https://slivermouse1316.github.io/gegurockG</id>
+
+</feed>
