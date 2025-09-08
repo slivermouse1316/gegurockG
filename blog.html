@@ -2,40 +2,44 @@
 title: 블로그
 permalink: /blog/
 ---
-
 <!DOCTYPE html>
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
     <title>블로그</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="/gegurockG/assets/styles.css" />
+    <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}" />
   </head>
   <body>
     <div id="header"></div>
 
     <div class="container">
       <h1>블로그</h1>
+
       <ul class="post-list">
-        {% for post in site.posts %} {% assign html = post.content | markdownify
-        %} {% assign parts = html | split: '
-        <h1>
-          ' %} {% if parts.size > 1 %} {% assign h1part = parts[1] | split: '
-        </h1>
-        ' | first | strip %} {% else %} {% assign h1part = post.title %} {%
-        endif %}
-        <li class="post-item">
-          <a class="post-link" href="{{ post.url | relative_url }}"
-            >{{ h1part }}</a
-          >
-        </li>
-        {% endfor %} {% if site.posts == empty %}
-        <li class="post-item">글이 없습니다.</li>
+        {% for post in site.posts %}
+          {%- assign html = post.content | markdownify -%}
+          {%- assign parts = html | split: '<h1' -%}
+          {% if parts.size > 1 %}
+            {%- assign after_open = parts[1] -%}
+            {%- assign after_gt = after_open | split: '>' | last -%}
+            {%- assign h1_text = after_gt | split: '</h1>' | first | strip -%}
+          {% else %}
+            {%- assign h1_text = post.title -%}
+          {% endif %}
+
+          <li class="post-item">
+            <a class="post-link" href="{{ post.url | relative_url }}">{{ h1_text }}</a>
+          </li>
+        {% endfor %}
+
+        {% if site.posts == empty %}
+          <li class="post-item">글이 없습니다.</li>
         {% endif %}
       </ul>
     </div>
 
     <div id="footer"></div>
-    <script src="/gegurockG/assets/main.js"></script>
+    <script src="{{ '/assets/main.js' | relative_url }}"></script>
   </body>
 </html>

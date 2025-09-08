@@ -119,3 +119,25 @@ footer {
 .post-content h1:first-of-type {
   display: block !important;
 }
+.post-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 20px 0;
+}
+.post-item {
+  position: relative;
+  padding-left: 1.1em;
+}
+.post-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  line-height: 1;
+}
+.post-link {
+  text-decoration: none;
+}
+.post-link:hover {
+  text-decoration: underline;
+}
