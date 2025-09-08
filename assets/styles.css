@@ -187,3 +187,12 @@ footer {
 .post-link:hover {
   text-decoration: underline;
 }
+/* 전역: 본문 첫 H1 숨김(이미 있다면 유지) */
+.post-content h1:first-of-type {
+  display: none;
+}
+
+/* 이 글만: 본문 첫 H1 보이게 허용 */
+.post-content.post-content--allow-first-h1 h1:first-of-type {
+  display: block;
+}

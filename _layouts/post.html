@@ -14,11 +14,11 @@
 
     <div class="container">
       {% unless page.hide_title %}
-      <!-- 기본: title을 중앙에 표시 -->
+      <!-- 기본: title 중앙 표시 -->
       <h1 class="page-title">{{ page.title }}</h1>
       <article class="post-content">{{ content }}</article>
       {% else %}
-      <!-- 이 글만: title은 숨기고, 본문 첫 H1을 보이게 허용 -->
+      <!-- 이 글만: title 숨김 + 본문 첫 H1 보이게 허용 -->
       <article class="post-content post-content--allow-first-h1">
         {{ content }}
       </article>
