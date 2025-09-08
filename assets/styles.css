@@ -114,3 +114,7 @@ footer {
 .post-link:hover {
   text-decoration: underline;
 }
+/* 개별 글: 본문 첫 H1 숨김 → 상단엔 page.title만 보이게 */
+.post-content h1:first-of-type {
+  display: none;
+}
