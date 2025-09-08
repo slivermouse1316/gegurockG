@@ -46,11 +46,16 @@ async function initPartials() {
   await include("#header", A("/assets/header.html"));
   await include("#footer", A("/assets/footer.html"));
 
-  const path = location.pathname;
-  const isIndex =
-    path.endsWith("/index.html") || path === BASE || path === `${BASE}/`;
   const siteTitle = $("#siteTitle");
-  if (siteTitle) siteTitle.textContent = isIndex ? "개구락지" : "Cinéma Vérité";
+if (siteTitle) {
+  const map = {
+    "/gegurockG/": "Cinéma Vérité",
+    "/gegurockG/index.html": "Cinéma Vérité",
+    "/gegurockG/about.html": "Cinéma Vérité",
+    "/gegurockG/blog.html": "Cinéma Vérité",
+    "/gegurockG/webgl.html": "Cinéma Vérité",
+  };
+  siteTitle.textContent = map[location.pathname] ?? "Cinéma Vérité";
 }
 
 /* 블로그 목록 */
