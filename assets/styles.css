@@ -73,12 +73,13 @@ footer {
 }
 .hero {
   display: flex;
-  justify-content: center;
+  justify-content: center; /* 가로 중앙 */
   margin: 24px 0;
 }
 .hero img {
-  max-width: 720px;
-  width: 100%;
+  width: 50%; /* 가로 절반 → 세로도 비율 유지로 절반 */
+  max-width: 360px; /* 이전 cap(720px)의 절반 */
   height: auto;
+  display: block;
   border-radius: 12px;
 }
