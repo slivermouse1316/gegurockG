@@ -16,22 +16,15 @@ permalink: /blog/
 
     <div class="container">
       <h1>블로그</h1>
-
-      <!-- ★ 여기에는 #postList 같은 JS용 UL이 없어야 합니다 -->
       <ul class="post-list">
         {% for post in site.posts %}
         <li class="post-item">
           <a class="post-link" href="{{ post.url | relative_url }}"
             >{{ post.title }}</a
           >
-          {# 날짜 숨기려면 아래 줄 삭제 또는 CSS로 .post-meta 숨김 #} {#
-          <span class="post-meta">{{ post.date | date: "%Y-%m-%d" }}</span> #}
-          {# 제목만 보이고 “요약(첫 문장)”은 빼고 싶으면 이 블록 자체를 삭제 #}
-          {# {% if post.excerpt %}
-          <div class="post-summary">
-            {{ post.excerpt | strip_html | truncate: 140 }}
-          </div>
-          {% endif %} #}
+          <!-- 날짜/요약을 아예 안 보이게 하려면 아래 두 줄은 지우세요 -->
+          <!-- <span class="post-meta">{{ post.date | date: "%Y-%m-%d" }}</span> -->
+          <!-- {% if post.excerpt %}<div class="post-summary">{{ post.excerpt | strip_html | truncate: 140 }}</div>{% endif %} -->
         </li>
         {% endfor %} {% if site.posts == empty %}
         <li class="post-item">글이 없습니다.</li>
