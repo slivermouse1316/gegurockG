@@ -27,10 +27,12 @@ permalink: /blog/
           {% else %}
             {%- assign h1_text = post.title -%}
           {% endif %}
+
           <li class="post-item">
             <a class="post-link" href="{{ post.url | relative_url }}">{{ h1_text }}</a>
           </li>
         {% endfor %}
+
         {% if site.posts == empty %}
           <li class="post-item">글이 없습니다.</li>
         {% endif %}
