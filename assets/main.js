@@ -7,9 +7,6 @@ const BASE = "/gegurockG";
 const A = (p) => `${BASE}${p}`;
 const bust = () => `?v=${Date.now()}`;
 
-/* 상단 제목: 지금은 모든 페이지에서 Cinéma Vérité */
-const DEFAULT_TITLE = "Cinéma Vérité";
-
 /* 공용 fetch */
 async function fetchText(url) {
   const res = await fetch(url + bust(), { cache: "no-store" });
@@ -49,10 +46,6 @@ async function initPartials() {
         );
       }
     }
-
-    // 제목 강제 통일 (원하면 여기서 페이지별 분기 가능)
-    const siteTitle = $("#siteTitle");
-    if (siteTitle) siteTitle.textContent = DEFAULT_TITLE;
   }
 
   // === Footer ===
