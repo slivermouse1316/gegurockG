@@ -141,3 +141,14 @@ footer {
 .post-link:hover {
   text-decoration: underline;
 }
+.page-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 2rem; /* 원하면 크기 조절 */
+  margin: 24px 0 12px;
+}
+
+/* 본문 속 첫 H1(예: ‘제목제목테스트제목 …’)은 숨김 */
+.post-content h1:first-of-type {
+  display: none;
+}
