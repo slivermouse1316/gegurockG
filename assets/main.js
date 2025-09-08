@@ -2,111 +2,81 @@ function $(sel, p = document) {
   return p.querySelector(sel);
 }
 
-/* GitHub Pages 리포 베이스 경로 */
+/* GitHub Pages 리포 베이스 경로 (정확한 대/소문자!) */
 const BASE = "/gegurockG";
 const A = (p) => `${BASE}${p}`;
 const bust = () => `?v=${Date.now()}`;
 
-/* 공용 fetch 헬퍼 */
-async function loadJSON(path) {
-  const r = await fetch(path, { cache: "no-store" });
-  if (!r.ok) throw new Error(`loadJSON ${path} -> ${r.status}`);
-  return r.json();
-}
-async function loadText(path) {
-  const r = await fetch(path, { cache: "no-store" });
-  if (!r.ok) throw new Error(`loadText ${path} -> ${r.status}`);
-  return r.text();
-}
+/* 상단 제목: 지금은 모든 페이지에서 Cinéma Vérité */
+const DEFAULT_TITLE = "Cinéma Vérité";
 
-/* 아주 간단한 md -> html 변환 */
-function mdToHtml(md) {
-  return md
-    .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-    .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-    .replace(/\*(.*?)\*/g, "<i>$1</i>")
-    .replace(/\n/g, "<br>");
-}
-
-/* 파셜 include */
-async function include(selector, url) {
-  const mount = $(selector);
-  if (!mount) return;
+/* 공용 fetch */
+async function fetchText(url) {
   const res = await fetch(url + bust(), { cache: "no-store" });
-  if (!res.ok) {
-    console.error(`[include] ${url} -> ${res.status}`);
-    return;
-  }
-  mount.innerHTML = await res.text();
+  if (!res.ok) throw new Error(`${url} -> ${res.status}`);
+  return res.text();
 }
 
-/* 헤더/푸터 로드 + 첫 페이지만 '개구락지' 제목 */
+/* 헤더/푸터 include + 실패 시 폴백 생성 */
 async function initPartials() {
-  await include("#header", A("/assets/header.html"));
-  await include("#footer", A("/assets/footer.html"));
+  // === Header ===
+  const headerMount = $("#header");
+  if (headerMount) {
+    try {
+      // 1차: 정확 경로
+      headerMount.innerHTML = await fetchText(A("/assets/header.html"));
+    } catch (e1) {
+      try {
+        // 2차: 혹시 파일명이 Header.html인 경우(대/소문자 이슈)
+        headerMount.innerHTML = await fetchText(A("/assets/Header.html"));
+      } catch (e2) {
+        // 최종 폴백: 자바스크립트로 직접 헤더 삽입 (무조건 표시됨)
+        headerMount.innerHTML = `
+          <div class="nav">
+            <div class="title">
+              <a href="${A("/index.html")}" id="siteTitle">${DEFAULT_TITLE}</a>
+            </div>
+            <div class="menu">
+              <a href="${A("/about.html")}">소개</a>
+              <a href="${A("/blog.html")}">일상</a>
+              <a href="${A("/webgl.html")}">데모</a>
+            </div>
+          </div>`;
+        console.warn(
+          "[header] fallback rendered:",
+          e1?.message || e1,
+          e2?.message || e2
+        );
+      }
+    }
 
-  const siteTitle = $("#siteTitle");
-if (siteTitle) {
-  const map = {
-    "/gegurockG/": "Cinéma Vérité",
-    "/gegurockG/index.html": "Cinéma Vérité",
-    "/gegurockG/about.html": "Cinéma Vérité",
-    "/gegurockG/blog.html": "Cinéma Vérité",
-    "/gegurockG/webgl.html": "Cinéma Vérité",
-  };
-  siteTitle.textContent = map[location.pathname] ?? "Cinéma Vérité";
-}
-
-/* 블로그 목록 */
-async function initBlog() {
-  const listEl = $("#postList");
-  if (!listEl) return;
-  const posts = await loadJSON(A("/posts/posts.json"));
-  listEl.innerHTML = "";
-  posts.forEach((p) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<a href="${A("/post.html")}?slug=${p.slug}">${p.title}</a>`;
-    listEl.appendChild(li);
-  });
-}
-
-/* 블로그 글 */
-async function initPost() {
-  const c = $("#postContainer");
-  if (!c) return;
-  const slug = new URLSearchParams(location.search).get("slug");
-  if (!slug) {
-    c.innerHTML = "<p>글을 찾을 수 없음</p>";
-    return;
+    // 제목 강제 통일 (원하면 여기서 페이지별 분기 가능)
+    const siteTitle = $("#siteTitle");
+    if (siteTitle) siteTitle.textContent = DEFAULT_TITLE;
   }
-  const md = await loadText(A(`/posts/${slug}.md`));
-  c.innerHTML = mdToHtml(md);
-  const title = $("#postTitle");
-  if (title) title.textContent = slug;
+
+  // === Footer ===
+  const footerMount = $("#footer");
+  if (footerMount) {
+    try {
+      footerMount.innerHTML = await fetchText(A("/assets/footer.html"));
+    } catch (e1) {
+      try {
+        footerMount.innerHTML = await fetchText(A("/assets/Footer.html"));
+      } catch (e2) {
+        footerMount.innerHTML = `<footer>© ${DEFAULT_TITLE}</footer>`;
+        console.warn(
+          "[footer] fallback rendered:",
+          e1?.message || e1,
+          e2?.message || e2
+        );
+      }
+    }
+  }
 }
 
-/* WebGL 목록 */
-async function initWebGL() {
-  const list = $("#webglList");
-  if (!list) return;
-  const games = await loadJSON(A("/webgl/list.json"));
-  list.innerHTML = "";
-  games.forEach((g) => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <h3>${g.title}</h3>
-      <p>${g.description}</p>
-      <a class="btn" href="${A(g.path)}/index.html">실행</a>`;
-    list.appendChild(div);
-  });
-}
-
-/* 진입점: 헤더/푸터 먼저, 그 다음 컨텐츠 초기화 */
+/* (기존 블로그/웹GL 초기화는 그대로 두면 됨 — 생략) */
 document.addEventListener("DOMContentLoaded", async () => {
   await initPartials();
-  initBlog();
-  initPost();
-  initWebGL();
+  // initBlog(); initPost(); initWebGL();  // 쓰시는 경우 유지
 });
