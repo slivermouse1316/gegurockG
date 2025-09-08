@@ -1,0 +1,31 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ page.title }} | 블로그</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- baseurl을 자동 처리하려고 relative_url 사용 -->
+    <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}" />
+  </head>
+  <body>
+    <!-- 공통 헤더: JS가 /assets/header.html을 include -->
+    <div id="header"></div>
+
+    <div class="container">
+      <h1>{{ page.title }}</h1>
+      <p class="post-meta">{{ page.date | date: "%Y-%m-%d" }}</p>
+
+      <article class="post-content">
+        {{ content }}
+      </article>
+    </div>
+
+    <!-- 공통 푸터 -->
+    <div id="footer"></div>
+
+    <!-- 공통 스크립트 (헤더/푸터 include 및 기타 초기화) -->
+    <script src="{{ '/assets/main.js' | relative_url }}"></script>
+  </body>
+</html>
