@@ -2,10 +2,8 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <title>개구락지</title>
+    <title>소개</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- 절대경로 권장 -->
-
     <meta
       name="robots"
       content="index, follow, noimageindex, max-image-preview: none"
@@ -14,33 +12,20 @@
       name="googlebot"
       content="index, follow, noimageindex, max-image-preview: none"
     />
-
     <link rel="stylesheet" href="/gegurockG/assets/styles.css" />
   </head>
-
   <body>
-    <!-- 공통 헤더 -->
     <div id="header"></div>
 
     <div class="container">
-      <h1>개구락지</h1>
-
-      <!-- ▼ 여기: 중앙 이미지 -->
-      <div class="hero">
-        <img
-          src="/gegurockG/assets/images/MainImage.jpg"
-          alt=" "
-          loading="lazy"
-        />
-      </div>
-
-      <p>재밌는 것들!</p>
+      <h1>소개</h1>
+      <p>여기에 자기소개 적기</p>
     </div>
 
-    <!-- 공통 푸터 -->
+    <!-- 공통 푸터: JS가 /gegurockG/assets/footer.html을 include -->
     <div id="footer"></div>
 
-    <!-- 공통 스크립트 -->
+    <!-- 절대경로로 로드 (캐시 우회 및 index 전용 타이틀 교체 로직 포함) -->
     <script src="/gegurockG/assets/main.js"></script>
   </body>
 </html>

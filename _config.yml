@@ -1,0 +1,21 @@
+title: Vérité
+description: Personal site
+
+url: https://slivermouse1316.github.io
+baseurl: /gegurockG
+
+timezone: Asia/Seoul
+markdown: kramdown
+theme: null
+
+# GitHub Pages에서 허용되는 플러그인
+plugins:
+  - jekyll-redirect-from
+
+# 포스트 URL 전역 규칙: /blog/파일명슬러그/
+permalink: /blog/:title/
+
+collections:
+  games:
+    output: true
+    permalink: /games/:title/

@@ -1,0 +1,38 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ page.title }} | 블로그</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- ▼ 이미지 비색인(구글 이미지/썸네일 차단) -->
+    <meta
+      name="robots"
+      content="index, follow, noimageindex, max-image-preview: none"
+    />
+    <meta
+      name="googlebot"
+      content="index, follow, noimageindex, max-image-preview: none"
+    />
+    <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}" />
+  </head>
+  <body>
+    <div id="header"></div>
+
+    <div class="container">
+      {% unless page.hide_title %}
+      <h1 class="page-title">{{ page.title }}</h1>
+      <article class="post-content">{{ content }}</article>
+      {% else %}
+      <article class="post-content post-content--allow-first-h1">
+        {{ content }}
+      </article>
+      {% endunless %}
+    </div>
+
+    <div id="footer"></div>
+    <script src="{{ '/assets/main.js' | relative_url }}"></script>
+  </body>
+</html>

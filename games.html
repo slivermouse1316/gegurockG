@@ -1,0 +1,44 @@
+---
+title: 게임
+permalink: /games/
+---
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>게임</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 이미지 비색인 -->
+    <meta
+      name="robots"
+      content="index, follow, noimageindex, max-image-preview: none"
+    />
+    <meta
+      name="googlebot"
+      content="index, follow, noimageindex, max-image-preview: none"
+    />
+    <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}" />
+  </head>
+  <body>
+    <div id="header"></div>
+
+    <div class="container">
+      <h1>게임</h1>
+      <ul class="post-list">
+        {% for g in site.games %}
+        <li class="post-item">
+          <a class="post-link" href="{{ g.url | relative_url }}"
+            >{{ g.title }}</a
+          >
+        </li>
+        {% endfor %} {% if site.games == empty %}
+        <li class="post-item">게임 글이 없습니다.</li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div id="footer"></div>
+    <script src="{{ '/assets/main.js' | relative_url }}"></script>
+  </body>
+</html>
