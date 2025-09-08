@@ -159,3 +159,12 @@ footer {
   padding: 20px;
   text-align: center; /* ← 추가 */
 }
+/* 전역: 기본은 본문 첫 H1 숨김(타이틀과 중복 방지) */
+.post-content h1:first-of-type {
+  display: none;
+}
+
+/* 이 글만(클래스 부여 시): 본문 첫 H1 보이게 */
+.post-content.post-content--allow-first-h1 h1:first-of-type {
+  display: block;
+}
