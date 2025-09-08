@@ -10,4 +10,6 @@ theme: null
 plugins: [] # GitHub Pages 안전 모드
 
 # (선택) 블로그 퍼멀링 구조—원하면 바꾸세요
-permalink: /:year/:month/:day/:title/
+permalink: /blog/:title/
+plugins:
+  - jekyll-redirect-from

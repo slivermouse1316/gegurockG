@@ -16,16 +16,18 @@ permalink: /blog/
 
     <div class="container">
       <h1>블로그</h1>
-
       <ul class="post-list">
-        {% for post in site.posts %}
+        {% for post in site.posts %} {% assign html = post.content | markdownify
+        %} {% assign parts = html | split: '
+        <h1>
+          ' %} {% if parts.size > 1 %} {% assign h1part = parts[1] | split: '
+        </h1>
+        ' | first | strip %} {% else %} {% assign h1part = post.title %} {%
+        endif %}
         <li class="post-item">
           <a class="post-link" href="{{ post.url | relative_url }}"
-            >{{ post.title }}</a
+            >{{ h1part }}</a
           >
-          <!-- 날짜/요약을 아예 안 보이게 하려면 아래 두 줄은 지우세요 -->
-          <!-- <span class="post-meta">{{ post.date | date: "%Y-%m-%d" }}</span> -->
-          <!-- {% if post.excerpt %}<div class="post-summary">{{ post.excerpt | strip_html | truncate: 140 }}</div>{% endif %} -->
         </li>
         {% endfor %} {% if site.posts == empty %}
         <li class="post-item">글이 없습니다.</li>
