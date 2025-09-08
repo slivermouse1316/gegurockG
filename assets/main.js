@@ -80,3 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await initPartials();
   // initBlog(); initPost(); initWebGL();  // 쓰시는 경우 유지
 });
+async function initBlog() {
+  // 사용 중지: Jekyll로 마이그레이션 완료
+  return;
+}

@@ -84,3 +84,33 @@ footer {
 .post-meta {
   display: none !important;
 }
+.post-list {
+  list-style: none; /* 기본 점 제거 */
+  padding-left: 0; /* 기본 들여쓰기 제거 */
+  margin: 20px 0;
+  max-width: 680px; /* 선택: 목록 폭 제한 */
+  margin-left: auto; /* 선택: 컨테이너 안에서 가운데 배치 */
+  margin-right: auto; /* 선택: 컨테이너 안에서 가운데 배치 */
+  text-align: left; /* 제목은 왼쪽 정렬 */
+}
+
+/* 제목 바로 앞에 '•' 붙이기 */
+.post-item {
+  position: relative;
+  padding-left: 1.1em; /* 불릿 자리 */
+}
+.post-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0.05em; /* 수직 살짝 맞춤 */
+  line-height: 1;
+  font-size: 1.1em; /* 불릿 크기 살짝 키움 (원하면 조절) */
+  color: currentColor; /* 글자색과 동일 */
+}
+.post-link {
+  text-decoration: none;
+}
+.post-link:hover {
+  text-decoration: underline;
+}
