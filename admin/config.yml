@@ -1,0 +1,28 @@
+backend:
+  name: github
+  repo: slivermouse1316/gegurockG # ← 본인 리포 맞으면 그대로
+  branch: main # ← 기본 브랜치명 (main/master 확인)
+  # GitHub Pages에서 로그인까지 하려면 OAuth 프록시가 필요합니다.
+  # 배포 전이라면 아래 두 줄은 일단 주석으로 두세요.
+  # base_url: https://<your-oauth-server-domain>
+  # auth_endpoint: /auth
+
+media_folder: "assets/images/uploads" # 리포 내부에 저장될 경로
+public_folder: "/gegurockG/assets/images/uploads" # 사이트에서 보이는 경로 (baseurl 반영)
+
+collections:
+  - name: "posts"
+    label: "Posts"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - {
+          label: "Cover Image",
+          name: "thumbnail",
+          widget: "image",
+          required: false,
+        }
+      - { label: "Body", name: "body", widget: "markdown" }
