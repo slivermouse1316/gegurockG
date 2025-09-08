@@ -2,22 +2,24 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <title>홈</title>
-    <link rel="stylesheet" href="assets/styles.css" />
-    <script defer src="assets/main.js"></script>
+    <title>개구락지</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 절대경로 권장 -->
+    <link rel="stylesheet" href="/gegurockG/assets/styles.css" />
   </head>
-
   <body>
+    <!-- 공통 헤더: JS가 /gegurockG/assets/header.html을 include -->
     <div id="header"></div>
 
     <div class="container">
-      <p>혼자 놉니다</p>
-      <a class="btn" href="blog.html">블로그</a>
-      <a class="btn" href="webgl.html">데모</a>
+      <h1>환영합니다</h1>
+      <p>여기는 첫 페이지입니다.</p>
     </div>
 
+    <!-- 공통 푸터: JS가 /gegurockG/assets/footer.html을 include -->
     <div id="footer"></div>
 
-    <script src="assets/main.js"></script>
+    <!-- 절대경로로 로드 (캐시 우회 및 index 전용 타이틀 교체 로직 포함) -->
+    <script src="/gegurockG/assets/main.js"></script>
   </body>
 </html>

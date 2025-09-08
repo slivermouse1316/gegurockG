@@ -2,15 +2,24 @@ function $(sel, p = document) {
   return p.querySelector(sel);
 }
 
+/* GitHub Pages 리포 베이스 경로 */
+const BASE = "/gegurockG";
+const A = (p) => `${BASE}${p}`;
+const bust = () => `?v=${Date.now()}`;
+
+/* 공용 fetch 헬퍼 */
 async function loadJSON(path) {
   const r = await fetch(path, { cache: "no-store" });
+  if (!r.ok) throw new Error(`loadJSON ${path} -> ${r.status}`);
   return r.json();
 }
 async function loadText(path) {
   const r = await fetch(path, { cache: "no-store" });
+  if (!r.ok) throw new Error(`loadText ${path} -> ${r.status}`);
   return r.text();
 }
 
+/* 아주 간단한 md -> html 변환 */
 function mdToHtml(md) {
   return md
     .replace(/^# (.*$)/gim, "<h1>$1</h1>")
@@ -20,11 +29,7 @@ function mdToHtml(md) {
     .replace(/\n/g, "<br>");
 }
 
-// ==== 경로 설정 (GitHub Pages 리포 이름) ====
-const BASE = "/gegurockG"; // 본인 리포 이름
-const A = (p) => `${BASE}${p}`; // 절대경로 헬퍼
-const bust = () => `?v=${Date.now()}`; // 캐시 우회 쿼리
-
+/* 파셜 include */
 async function include(selector, url) {
   const mount = $(selector);
   if (!mount) return;
@@ -36,12 +41,19 @@ async function include(selector, url) {
   mount.innerHTML = await res.text();
 }
 
+/* 헤더/푸터 로드 + 첫 페이지만 '개구락지' 제목 */
 async function initPartials() {
   await include("#header", A("/assets/header.html"));
   await include("#footer", A("/assets/footer.html"));
+
+  const path = location.pathname;
+  const isIndex =
+    path.endsWith("/index.html") || path === BASE || path === `${BASE}/`;
+  const siteTitle = $("#siteTitle");
+  if (siteTitle) siteTitle.textContent = isIndex ? "개구락지" : "Cinéma Vérité";
 }
 
-// ====== 블로그 / 포스트 / WebGL 목록 ======
+/* 블로그 목록 */
 async function initBlog() {
   const listEl = $("#postList");
   if (!listEl) return;
@@ -54,6 +66,7 @@ async function initBlog() {
   });
 }
 
+/* 블로그 글 */
 async function initPost() {
   const c = $("#postContainer");
   if (!c) return;
@@ -68,6 +81,7 @@ async function initPost() {
   if (title) title.textContent = slug;
 }
 
+/* WebGL 목록 */
 async function initWebGL() {
   const list = $("#webglList");
   if (!list) return;
@@ -84,9 +98,9 @@ async function initWebGL() {
   });
 }
 
-// ====== 진입점: 헤더/푸터 먼저, 그다음 컨텐츠 ======
+/* 진입점: 헤더/푸터 먼저, 그 다음 컨텐츠 초기화 */
 document.addEventListener("DOMContentLoaded", async () => {
-  await initPartials(); // 헤더/푸터 먼저 로드
+  await initPartials();
   initBlog();
   initPost();
   initWebGL();

@@ -20,17 +20,23 @@ a:hover {
   margin: 0 auto;
   padding: 20px;
 }
+
+/* NAV: 제목 중앙, 메뉴 오른쪽 */
 .nav {
   display: flex;
   align-items: center;
+  justify-content: flex-end; /* 메뉴는 오른쪽으로 */
+  gap: 16px;
   padding: 12px 20px;
   border-bottom: 1px solid #eee;
   background: #fafafa;
   position: sticky;
   top: 0;
+  z-index: 10;
+  position: relative; /* 중앙 고정을 위한 기준 컨테이너 */
 }
 
-/* 제목: 항상 중앙 */
+/* 제목을 항상 중앙에 고정 */
 .nav .title {
   position: absolute;
   left: 50%;
@@ -40,12 +46,13 @@ a:hover {
   text-align: center;
 }
 
-/* 메뉴: 오른쪽 */
+/* 메뉴 그룹 (오른쪽) */
 .nav .menu {
-  margin-left: auto;
   display: flex;
   gap: 16px;
+  margin-left: auto;
 }
+
 footer {
   padding: 40px 20px;
   border-top: 1px solid #eee;
