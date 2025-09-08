@@ -71,3 +71,14 @@ footer {
   border: 1px solid #ccc;
   border-radius: 8px;
 }
+.hero {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+.hero img {
+  max-width: 720px;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}

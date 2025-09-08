@@ -1,26 +1,37 @@
 <!DOCTYPE html>
 <html lang="ko">
-   <head>
+  <head>
     <meta charset="utf-8" />
     <title>개구락지</title>
-    <link rel="stylesheet" href="assets/styles.css" />
-    <script defer src="assets/main.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 절대경로 권장 -->
+    <link rel="stylesheet" href="/gegurockG/assets/styles.css" />
   </head>
+
   <body>
-    <div id="header"></div>
-  <body>
-    <!-- 공통 헤더: JS가 /gegurockG/assets/header.html을 include -->
+    <!-- 공통 헤더 -->
     <div id="header"></div>
 
     <div class="container">
       <h1>환영합니다</h1>
+
+      <!-- ▼ 여기: 중앙 이미지 -->
+      <div class="hero">
+        <!-- 확장자가 png이면 .png로 바꿔주세요 -->
+        <img
+          src="/gegurockG/assets/images/MainImage.jpg"
+          alt="메인 이미지"
+          loading="lazy"
+        />
+      </div>
+
       <p>여기는 첫 페이지입니다.</p>
     </div>
 
-    <!-- 공통 푸터: JS가 /gegurockG/assets/footer.html을 include -->
+    <!-- 공통 푸터 -->
     <div id="footer"></div>
 
-    <!-- 절대경로로 로드 (캐시 우회 및 index 전용 타이틀 교체 로직 포함) -->
+    <!-- 공통 스크립트 -->
     <script src="/gegurockG/assets/main.js"></script>
   </body>
 </html>
