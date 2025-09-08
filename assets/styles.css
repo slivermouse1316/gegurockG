@@ -146,3 +146,16 @@ footer {
 .post-content.post-content--allow-first-h1 h1:first-of-type {
   display: block;
 }
+.post-list {
+  list-style: none;
+  padding: 0;
+  width: min(720px, 92%);
+  margin: 24px auto;
+  text-align: center; /* ← left → center 로 변경 */
+}
+.container {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center; /* ← 추가 */
+}
