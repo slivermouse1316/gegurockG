@@ -189,3 +189,10 @@ img {
   padding: 0 16px;
   box-sizing: border-box;
 }
+/*어바웃에만 이미지 중앙정렬*/
+.about .container > img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
