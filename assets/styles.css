@@ -176,3 +176,16 @@ footer {
   max-width: 100%; /* 부모 영역보다 커지지 않음 */
   height: auto; /* 가로세로 비율 유지 */
 }
+img {
+  max-width: 100%;
+  height: auto;
+  display: block; /* 인라인 여백 제거용 */
+}
+
+/* 컨테이너가 화면보다 넓어지는 걸 방지 */
+.container {
+  max-width: 960px; /* 원하면 포트폴리오 기준으로 조절 */
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
