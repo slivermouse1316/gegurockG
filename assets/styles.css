@@ -196,3 +196,13 @@ img {
   max-width: 100%;
   height: auto;
 }
+/* 중앙 정렬 전용: 반드시 .container 다음에 위치 */
+.container.center {
+  text-align: center;
+}
+.container.center > img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
