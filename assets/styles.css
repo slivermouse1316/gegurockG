@@ -168,3 +168,11 @@ footer {
 .post-content.post-content--allow-first-h1 h1:first-of-type {
   display: block !important;
 }
+
+/* 블로그 글 본문 안의 이미지 공통 스타일 */
+.post-content img {
+  display: block; /* 블록 요소로 변경 → margin auto 적용 가능 */
+  margin: 1.2em auto; /* 위아래 1.2em 여백, 좌우 자동(중앙 정렬) */
+  max-width: 100%; /* 부모 영역보다 커지지 않음 */
+  height: auto; /* 가로세로 비율 유지 */
+}
