@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <title>{{ page.title }} | 블로그</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- ▼ 이미지 비색인(구글 이미지/썸네일 차단) -->
+    <!-- 이미지 비색인 -->
     <meta
       name="robots"
       content="index, follow, noimageindex, max-image-preview: none"
@@ -21,16 +21,10 @@
   <body>
     <div id="header"></div>
 
-    <div class="container center">
-      <h1></h1>
-
-      <img
-        src="/gegurockG/assets/images/IMG_6102.JPG"
-        alt="IMG_6102"
-        loading="lazy"
-      />
-
-      <p>예대생이었지만 예술과는 거리가 먼</p>
+    <div class="container">
+      {% if page.hide_title != true %}
+      <h1>{{ page.title }}</h1>
+      {% endif %} {{ content }}
     </div>
 
     <div id="footer"></div>
