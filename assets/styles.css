@@ -189,3 +189,14 @@ img {
   padding: 0 16px;
   box-sizing: border-box;
 }
+/* 중앙 정렬 전용 컨테이너 */
+.container.center {
+  text-align: center; /* 텍스트, 인라인 요소 중앙 */
+}
+
+.container.center > img {
+  display: block;
+  margin: 0 auto; /* 이미지도 가로 중앙 */
+  max-width: 100%;
+  height: auto;
+}
