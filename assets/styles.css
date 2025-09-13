@@ -217,3 +217,39 @@ img {
 .post-content li {
   margin: 0.3em 0; /* (선택) 항목 간격 살짝 띄우기 */
 }
+/* 글 본문 리스트: 기본 불릿 제거 후 커스텀 불릿 사용 */
+.post-content ul,
+.post-content ol {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+/* 항목 안쪽에 여백 1rem 주고, 거기에 점을 ‘딱’ 붙여 렌더 */
+.post-content li {
+  position: relative;
+  padding-left: 1rem;
+  margin: 0.3em 0;
+}
+.post-content li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  font-size: 1.05em;
+  line-height: 1;
+  color: currentColor;
+}
+/* 글 본문 이미지 중앙 */
+.post-content img {
+  display: block;
+  margin: 1.2em auto; /* 좌우 auto로 중앙 */
+  max-width: 100%;
+  height: auto;
+}
+/* 목록 안의 이미지도 동일 처리 (Typora가 리스트 안에 이미지 넣는 경우 대비) */
+.post-content li > img,
+.post-content p > img {
+  display: block;
+  margin: 1.2em auto;
+}
