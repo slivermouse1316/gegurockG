@@ -27,11 +27,11 @@ hide_title: true
 **2주차**
 
 - Bouncing Ball animation
-  - ![BouncingBall]({{ '/assets/images/BouncingBall.gif' | relative_url }})
+  - ![BouncingBall](../assets/images/BouncingBall.gif)
 - Pendulum animation
-  - ![pendeulum]({{ '/assets/images/pendeulum.gif' | relative_url }})
+  - ![pendeulum](../assets/images/pendeulum.gif)
 - Tail animation
-  - ![CuteTail]({{ '/assets/images/CuteTail.gif' | relative_url }})
+  - ![CuteTail](../assets/images/CuteTail.gif)
 
 오토 탄젠트D
 

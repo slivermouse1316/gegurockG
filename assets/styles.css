@@ -206,3 +206,14 @@ img {
   max-width: 100%;
   height: auto;
 }
+/* 블로그 글 본문 리스트 점 붙이기 */
+.post-content ul,
+.post-content ol {
+  list-style-position: inside; /* 점을 텍스트 바로 앞에 붙임 */
+  padding-left: 0; /* 불필요한 들여쓰기 제거 */
+  margin-left: 0; /* 좌측 여백 제거 */
+}
+
+.post-content li {
+  margin: 0.3em 0; /* (선택) 항목 간격 살짝 띄우기 */
+}
