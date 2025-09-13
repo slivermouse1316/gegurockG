@@ -1,56 +1,88 @@
 # -*- coding: utf-8 -*-
 """
-Typora가 삽입하는 이미지 링크를 Jekyll 권장형식으로 일괄 변환:
-  ![alt](../assets/images/foo.jpg)
-  ![alt](./assets/images/foo.jpg)
-  ![alt](/assets/images/foo.jpg)
-  ![alt](C:\...\assets\images\foo.jpg)
-→ ![alt]({{ '/assets/images/foo.jpg' | relative_url }})
+Convert local/relative image links in Markdown to Jekyll's relative_url form.
 
-- 이미 relative_url이 들어간 줄, http(s) 외부 링크는 건드리지 않음
-- 모든 .md, .markdown 파일 대상
-- 원본 파일은 .bak로 백업
+Examples converted:
+  ![alt](../assets/images/foo.jpg)      -> ![alt]({{ '/assets/images/foo.jpg' | relative_url }})
+  ![alt](./assets/images/foo.jpg)       -> same
+  ![alt](/assets/images/foo.jpg)        -> same
+  ![alt](assets/images/foo.jpg)         -> same
+  ![alt](..\assets\images\foo.jpg)      -> same (Windows backslashes)
+  <img src="../assets/images/foo.jpg">  -> <img src="{{ '/assets/images/foo.jpg' | relative_url }}">
+
+Won't touch lines that already contain 'relative_url', Liquid '{{', or 'http(s)://' links.
+
+Backups: create .bak once per file if we change it.
 """
-
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
 MD_EXTS = {".md", ".markdown"}
+ROOT = Path(__file__).resolve().parents[1]
 
-# 스킵 조건: 이미 변환됨 / 외부 URL
-rx_skip = re.compile(r"relative_url\s*}}|]\(\s*https?://", re.I)
+# Detect markdown image syntax and HTML <img ...> tags
+MD_IMG = re.compile(r'(!\[[^\]]*\]\()(?P<url>[^)]+)(\))')
+HTML_IMG = re.compile(r'(<img[^>]*\bsrc=["\'])(?P<url>[^"\']+)(["\'])', re.IGNORECASE)
 
-# ../assets/images/foo.jpg  ./assets/images/foo.jpg  /assets/images/foo.jpg  (공백·괄호 방지)
-rx_assets_rel = re.compile(
-    r"!\[([^\]]*)\]\(\s*(?:\.\./|\./|/)?assets/images/([^)#\s]+?)\s*\)", re.I
+# Matching any assets/images path with optional ../, ./, /, or bare, and either / or \ separators
+ASSET_RE = re.compile(
+    r'(?P<prefix>(?:\.\./|\./|/)?|)(?P<assets>(?:assets[/\\\\]images[/\\\\].+))',
+    re.IGNORECASE
 )
 
-# 윈도 경로 C:\...\assets\images\foo.jpg  또는 D:/...\assets/images/foo.jpg
-rx_assets_win = re.compile(
-    r"!\[([^\]]*)\]\(\s*[A-Za-z]:[\\/].*?[\\/]assets[\\/]images[\\/]+([^)\\/:#\s]+)\s*\)", re.I
-)
+def _normalize_to_site_path(url: str) -> str:
+    # Replace backslashes with forward slashes
+    u = url.replace("\\\\", "/").replace("\\", "/")
+    # If it contains assets/images, strip leading ./ or ../
+    m = re.search(r'(?:\.\./|\./)?(/?assets/images/.*)', u, flags=re.IGNORECASE)
+    if not m:
+        return None
+    # Ensure single leading slash for site-root
+    path = m.group(1)
+    if not path.startswith("/"):
+        path = "/" + path
+    # Collapse any double slashes
+    path = re.sub(r"/{2,}", "/", path)
+    return path
 
-def convert_text(text: str) -> str:
-    # 이미 변환/외부URL 포함 라인은 그대로 두기
-    if rx_skip.search(text):
-        return text
-    text2 = rx_assets_rel.sub(r"![\1]({{ '/assets/images/\2' | relative_url }})", text)
-    text2 = rx_assets_win.sub(r"![\1]({{ '/assets/images/\2' | relative_url }})", text2)
-    return text2
+def convert_line(line: str) -> str:
+    # Skip if contains Liquid or already converted or external
+    if "relative_url" in line or "{{" in line or "http://" in line or "https://" in line:
+        return line
 
-def process_file(p: Path) -> bool:
-    try:
-        original = p.read_text(encoding="utf-8")
-    except UnicodeDecodeError:
-        # CP949 등으로 저장된 경우에도 동작하도록
-        original = p.read_text(encoding="cp949")
+    def _md_sub(m):
+        url = m.group("url").strip()
+        site_path = _normalize_to_site_path(url)
+        if site_path:
+            return f"{m.group(1)}{{{{ '{site_path}' | relative_url }}}}{m.group(3)}"
+        return m.group(0)
 
-    new = convert_text(original)
-    if new != original:
-        # 백업 저장
-        p.with_suffix(p.suffix + ".bak").write_text(original, encoding="utf-8")
-        p.write_text(new, encoding="utf-8")
+    def _html_sub(m):
+        url = m.group("url").strip()
+        site_path = _normalize_to_site_path(url)
+        if site_path:
+            return f"{m.group(1)}{{{{ '{site_path}' | relative_url }}}}{m.group(3)}"
+        return m.group(0)
+
+    changed = False
+    new_line = MD_IMG.sub(_md_sub, line)
+    if new_line != line:
+        changed = True
+    newer_line = HTML_IMG.sub(_html_sub, new_line)
+    if newer_line != new_line:
+        changed = True
+    return newer_line if changed else line
+
+def process_file(fp: Path) -> bool:
+    orig = fp.read_text(encoding="utf-8", errors="replace")
+    lines = orig.splitlines(keepends=True)
+    new_lines = [convert_line(ln) for ln in lines]
+    new = "".join(new_lines)
+    if new != orig:
+        bak = fp.with_suffix(fp.suffix + ".bak")
+        if not bak.exists():
+            bak.write_text(orig, encoding="utf-8")
+        fp.write_text(new, encoding="utf-8")
         return True
     return False
 
