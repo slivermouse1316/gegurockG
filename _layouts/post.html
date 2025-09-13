@@ -22,23 +22,22 @@
     <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}" />
   </head>
   <body>
-    <!-- 공통 헤더 (JS가 header.html include) -->
+    <!-- 공통 헤더 (main.js가 header.html include) -->
     <div id="header"></div>
 
-    <!-- 본문 컨테이너 -->
     <div class="container">
       {% if page.hide_title != true %}
       <h1>{{ page.title }}</h1>
       {% endif %}
 
-      <!-- ✅ 본문 감싸기 -->
+      <!-- ✅ 글 본문: 여기만 .post-content 로 감싸기 -->
       <div class="post-content">{{ content }}</div>
     </div>
 
     <!-- 공통 푸터 -->
     <div id="footer"></div>
 
-    <!-- 공통 스크립트 (header/footer include 등) -->
+    <!-- 공통 스크립트 -->
     <script src="{{ '/assets/main.js' | relative_url }}"></script>
   </body>
 </html>
