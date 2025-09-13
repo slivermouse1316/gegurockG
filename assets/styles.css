@@ -276,3 +276,26 @@ img {
   line-height: 1;
   color: currentColor;
 }
+/* ===== 불릿 점을 텍스트에 딱 붙이기 ===== */
+.post-content ul,
+.post-content ol {
+  list-style: none; /* 기본 불릿 제거 */
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.post-content li {
+  position: relative;
+  padding-left: 1rem; /* 글 시작 위치 */
+  margin: 0.3em 0;
+}
+
+.post-content li::before {
+  content: "•"; /* 커스텀 점 */
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  font-size: 1.05em;
+  line-height: 1;
+  color: currentColor;
+}
