@@ -71,7 +71,7 @@ Tail animation
 
 
 
-![Punch]({{ '/assets/images/Punch.gif' | relative_url }})
+![Punch](../assets/images/Punch.gif)
 
 이번주는 마야에서 사용하는 리그과 펀치 오버슛을 공부 했습니다
 
@@ -87,9 +87,9 @@ Tail animation
 
 ##### 4~5주차
 
-![Walk]({{ '/assets/images/Walk.gif' | relative_url }})
+![Walk](../assets/images/Walk.gif)
 
-![Run]({{ '/assets/images/Run.gif' | relative_url }})
+![Run](../assets/images/Run.gif)
 
 
 
@@ -105,11 +105,11 @@ Tail animation
 
 키마다 스페이싱이 튀는 부분이 있었고 발의 아크가 물방울 모양을 그리지 않고 되게 이상한 모습을 그리고 있어서  
 
-![image-20251106131555718]({{ '/assets/images/image-20251106131555718.png' | relative_url }})
+![image-20251106131555718](../assets/images/image-20251106131555718.png)
 
 스페이싱과 아크가 더러운 모션의 예
 
-![image-20251106131714038]({{ '/assets/images/image-20251106131714038.png' | relative_url }})
+![image-20251106131714038](../assets/images/image-20251106131714038.png)
 
 원래는 발의 아크가 이런 식으로 나와야 한다고 한다. 딱봐도 더러운 아크의 형태 
 
