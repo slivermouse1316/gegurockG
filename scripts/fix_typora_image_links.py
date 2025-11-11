@@ -1,103 +1,142 @@
+# convert_images_verbose.py
 # -*- coding: utf-8 -*-
 """
-Convert local/relative image links in Markdown to Jekyll's relative_url form.
+Fix Typora-style image links to Jekyll {{ '...'/ | relative_url }} in Markdown.
 
-Supported:
+Supported inputs:
   ![alt](../assets/images/foo.jpg)
   ![alt](../../assets/images/foo.jpg)
   ![alt](./assets/images/foo.jpg)
   ![alt](/assets/images/foo.jpg)
   ![alt](assets/images/foo.jpg)
+  ![alt](<../assets/images/foo.jpg>)       # angle brackets OK
   <img src="../assets/images/foo.jpg">
 """
 
 import re
+import sys
 from pathlib import Path
 
+# -------- Settings --------
 MD_EXTS = {".md", ".markdown"}
 
-# ✅ 리포 루트를 현재 작업 디렉터리로 고정 (스크립트를 어디서 실행하든 안전)
-ROOT = Path.cwd()
-
-# 마크다운 이미지 / HTML <img> 캡처
+# Markdown image and HTML <img> capture
 MD_IMG = re.compile(r'(!\[[^\]]*\]\()(?P<url>[^)]+)(\))')
 HTML_IMG = re.compile(r'(<img[^>]*\bsrc=["\'])(?P<url>[^"\']+)(["\'])', re.IGNORECASE)
 
-# assets/images 경로 탐지: ../ 또는 ./ 가 여러 번 나와도 OK, \도 /로 정규화
-ASSETS_PATH = re.compile(r'(?:\.{1,2}/)*assets/images/.*', re.IGNORECASE)
+# Match assets/images path with ../ or ./ repeated, also backslashes
+ASSETS_PATH = re.compile(r'(?:\.{1,2}/)*assets[/\\]images[/\\].*', re.IGNORECASE)
 
 def _normalize_to_site_path(url: str) -> str | None:
-    # Windows 구분자 정규화
-    u = url.replace("\\", "/").strip()
+    u = url.strip()
 
-    # 따옴표/타이틀 제거 (e.g., foo.png "caption")
-    if " " in u and not u.startswith("http"):
-        u = u.split(" ")[0]
+    # strip wrapping quotes
+    if (u.startswith('"') and u.endswith('"')) or (u.startswith("'") and u.endswith("'")):
+        u = u[1:-1]
+    # strip wrapping angle brackets: ![](<...>)
+    if u.startswith("<") and u.endswith(">"):
+        u = u[1:-1]
 
-    # 외부 링크는 제외
-    if u.startswith(("http://", "https://")):
+    # normalize slashes
+    u = u.replace("\\", "/")
+
+    # skip external or already-liquid
+    if u.startswith(("http://", "https://")) or "relative_url" in u:
         return None
 
-    # assets/images/ 이하만 허용
+    # drop trailing title after a space: foo.png "caption"
+    if " " in u and not u.startswith(("http://", "https://")):
+        u = u.split(" ")[0]
+
     m = ASSETS_PATH.search(u)
     if not m:
         return None
 
-    path = m.group(0)
-    # 앞쪽 ../ ./ 제거 후 선행 슬래시 붙이기
+    path = m.group(0).replace("\\", "/")
+
+    # remove leading ../ or ./ repeats
     path = re.sub(r'^(?:\.{1,2}/)+', "", path)
+    # collapse /./
+    path = re.sub(r'/\./', '/', path)
+    # ensure single leading slash
     if not path.startswith("/"):
         path = "/" + path
-    # 이중 슬래시 정리
+    # collapse multiple slashes
     path = re.sub(r"/{2,}", "/", path)
     return path
 
-def _sub_image_url(url: str) -> str:
+def _to_liquid(url: str) -> str | None:
     site_path = _normalize_to_site_path(url)
     if site_path:
         return "{{ '" + site_path + "' | relative_url }}"
-    return url  # 매칭 안 되면 원본 유지
+    return None
 
-def convert_line(line: str) -> str:
-    # 마크다운 ![]() 안의 url만 치환
+def convert_line(line: str, file: str, lineno: int) -> tuple[str, bool]:
+    changed = False
+
     def _md_sub(m):
+        nonlocal changed
         url = m.group("url")
-        return f"{m.group(1)}{_sub_image_url(url)}{m.group(3)}"
+        rep = _to_liquid(url)
+        if rep:
+            changed = True
+            print(f"  [md] {file}:{lineno}  {url}  ->  {rep}")
+            return f"{m.group(1)}{rep}{m.group(3)}"
+        return m.group(0)
 
-    # HTML <img src="..."> 의 url만 치환
     def _html_sub(m):
+        nonlocal changed
         url = m.group("url")
-        return f"{m.group(1)}{_sub_image_url(url)}{m.group(3)}"
+        rep = _to_liquid(url)
+        if rep:
+            changed = True
+            print(f"  [html] {file}:{lineno}  {url}  ->  {rep}")
+            return f"{m.group(1)}{rep}{m.group(3)}"
+        return m.group(0)
 
     new_line = MD_IMG.sub(_md_sub, line)
     new_line = HTML_IMG.sub(_html_sub, new_line)
-    return new_line
+    return new_line, changed
 
 def process_file(fp: Path) -> bool:
-    orig = fp.read_text(encoding="utf-8", errors="replace")
-    lines = orig.splitlines(keepends=True)
-    new_lines = []
-    changed = False
-    for ln in lines:
-        nl = convert_line(ln)
-        if nl != ln:
-            changed = True
-        new_lines.append(nl)
-    if changed:
-        bak = fp.with_suffix(fp.suffix + ".bak")
-        if not bak.exists():
-            bak.write_text(orig, encoding="utf-8")
-        fp.write_text("".join(new_lines), encoding="utf-8")
-    return changed
+    try:
+        if not fp.is_file():
+            return False
+        if fp.suffix.lower() not in MD_EXTS:
+            return False
+
+        orig = fp.read_text(encoding="utf-8", errors="replace")
+        out_lines = []
+        touched = False
+        for i, ln in enumerate(orig.splitlines(keepends=True), 1):
+            nl, ch = convert_line(ln, str(fp), i)
+            if ch:
+                touched = True
+            out_lines.append(nl)
+
+        if touched:
+            bak = fp.with_suffix(fp.suffix + ".bak")
+            if not bak.exists():
+                bak.write_text(orig, encoding="utf-8")
+            fp.write_text("".join(out_lines), encoding="utf-8")
+            print(f"[fixed] {fp}")
+        return touched
+
+    except Exception as e:
+        print(f"[skip:{type(e).__name__}] {fp} -> {e}")
+        return False
 
 def main():
-    md_files = [f for f in ROOT.rglob("*") if f.suffix.lower() in MD_EXTS]
-    touched = 0
-    for f in md_files:
+    # If an arg is provided, treat it as the repo root.
+    # Otherwise default to the parent of this script (…/scripts -> repo root).
+    root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parents[1]
+    print(f"ROOT = {root}")
+
+    cnt = 0
+    for f in root.rglob("*"):
         if process_file(f):
-            touched += 1
-            print(f"[fixed] {f.relative_to(ROOT)}")
-    print(f"Done. Updated {touched} file(s). ROOT={ROOT}")
+            cnt += 1
+    print(f"Done. Updated {cnt} file(s).")
 
 if __name__ == "__main__":
     main()
